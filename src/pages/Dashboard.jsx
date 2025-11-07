@@ -13,6 +13,8 @@ import {
   orderBy,
   serverTimestamp,
 } from "firebase/firestore";
+import.meta.env.VITE_API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -115,13 +117,10 @@ const Dashboard = () => {
       formData.append("pdf", fileToUpload);
       formData.append("userId", user.uid);
 
-      const uploadResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const uploadResponse = await fetch(`${baseUrl}/upload`, {
+        method: "POST",
+        body: formData,
+      });
 
       if (!uploadResponse.ok) {
         const errorData = await uploadResponse.json();
@@ -144,21 +143,18 @@ const Dashboard = () => {
       });
 
       // Step 3: If Firebase save succeeded, confirm the file save on backend
-      const confirmResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/upload/confirm`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ tempId: tempId }),
-        }
-      );
+      const confirmResponse = await fetch(`${baseUrl}/upload/confirm`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tempId: tempId }),
+      });
 
       if (!confirmResponse.ok) {
         // If confirmation fails, delete the Firestore document and cancel the temp file
         await deleteDoc(docRef);
-        await fetch(`${import.meta.env.VITE_API_URL}/upload/cancel`, {
+        await fetch(`${baseUrl}/upload/cancel`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -205,7 +201,7 @@ const Dashboard = () => {
       // Cleanup: If we have a temp file, cancel it
       if (tempId) {
         try {
-          await fetch(`${import.meta.env.VITE_API_URL}/upload/cancel`, {
+          await fetch(`${baseUrl}/upload/cancel`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -234,9 +230,7 @@ const Dashboard = () => {
       // Step 2: Delete file from backend
       if (report.uploadedFileName) {
         const deleteResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/files/${report.userId}/${
-            report.uploadedFileName
-          }`,
+          `${baseUrl}/files/${report.userId}/${report.uploadedFileName}`,
           {
             method: "DELETE",
           }
@@ -301,7 +295,7 @@ const Dashboard = () => {
       const filePaths = reports.map((report) => report.filePath);
       const mimeTypes = reports.map((report) => report.mimetype);
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/analyze`, {
+      const response = await fetch(`${baseUrl}/analyze`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
