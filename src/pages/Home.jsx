@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <div className="min-h-screen bg-linear-to-b from-amber-50 to-white w-full">
