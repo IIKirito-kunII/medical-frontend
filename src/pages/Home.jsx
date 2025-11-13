@@ -13,18 +13,18 @@ const Home = () => {
               efficient, and accessible digital solutions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href="/signup"
+              <Link
+                to="/signup"
                 className="inline-block px-6 py-3 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition-colors duration-150 text-center"
               >
                 Get Started
-              </a>
-              <a
-                href="/login"
+              </Link>
+              <Link
+                to="/login"
                 className="inline-block px-6 py-3 bg-amber-100 text-teal-700 font-medium rounded-lg hover:bg-amber-200 transition-colors duration-150 text-center"
               >
                 Sign In
-              </a>
+              </Link>
             </div>
           </div>
           <div className="hidden md:block">
