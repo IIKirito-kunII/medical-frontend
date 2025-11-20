@@ -1,16 +1,97 @@
-# React + Vite
+# Smart Medical Record System – Frontend (Live Project)[https://medical-frontend-three.vercel.app/]
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The frontend for the Smart Medical Record System (SMRS) is built using **React + Vite**, allowing users to upload, view, and manage their medical PDFs.  
+This client communicates with the backend API deployed on Render.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
+- User authentication (Firebase)
+- Upload PDF files
+- Fetch & display uploaded records
+- View PDF previews
+- Responsive UI
+- Environment variable support
+- Deployed on Netlify/Vercel
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🧩 Tech Stack
+- **React (Vite)**
+- **Firebase Auth**
+- **TailwindCSS / CSS**
+- **Vercel / Netlify**
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📂 Project Structure
+
+```
+medical-frontend/
+├── src/
+│   ├── components/
+│   │   ├── Dashboard.jsx        # Main upload dashboard
+│   │   └── Navbar.jsx           # Navigation bar
+│   │
+│   ├── context/
+│   │   └── AuthContext.jsx      # Firebase auth wrapper
+│   │
+│   ├── pages/
+│   │   ├── Login.jsx
+│   │   └── Register.jsx
+│   │
+│   ├── firebase.js              # Firebase initialization
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── public/
+│   └── index.html
+│
+├── .env                         # Frontend environment variables
+├── package.json
+├── package-lock.json
+├── vite.config.js
+└── README.md
+```
+
+---
+
+## 🔧 Setup Instructions
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/IIKirito-kunII/medical-frontend
+cd medical-frontend
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Add `.env` with backend URL
+```
+VITE_API_URL=https://medical-backend-11qg.onrender.com
+VITE_FIREBASE_API_KEY=xxxx
+VITE_FIREBASE_AUTH_DOMAIN=xxxx
+VITE_FIREBASE_PROJECT_ID=xxxx
+VITE_FIREBASE_STORAGE_BUCKET=xxxx
+VITE_FIREBASE_APP_ID=xxxx
+```
+
+### 4. Run app
+```bash
+npm run dev
+```
+
+---
+
+## 🌐 Live Deployment
+Frontend URL:  
+🔗 *Add your Netlify/Vercel link*
+
+---
+
+## 📜 License
+MIT License
+
