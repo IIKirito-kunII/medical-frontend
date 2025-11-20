@@ -1,5 +1,4 @@
 # Smart Medical Record System – Frontend 
-Live Project: https://medical-frontend-three.vercel.app/
 
 The frontend for the Smart Medical Record System (SMRS) is built using **React + Vite**, allowing users to upload, view, and manage their medical PDFs.  
 This client communicates with the backend API deployed on Render.
@@ -89,7 +88,7 @@ npm run dev
 
 ## 🌐 Live Deployment
 Frontend URL:  
-🔗 *Add your Netlify/Vercel link*
+🔗 **https://medical-frontend-three.vercel.app**
 
 ---
 
