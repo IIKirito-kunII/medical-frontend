@@ -1,11 +1,12 @@
 # Smart Medical Record System – Frontend 
 
-The frontend for the Smart Medical Record System (SMRS) is built using **React + Vite**, allowing users to upload, view, and manage their medical PDFs.  
-This client communicates with the backend API deployed on Render.
-<div>
-  <img src="screenshots/smrs-front.png" alt="SMRS Front screenshot" width="550">
-  <img src="screenshots/smrs.png" alt="SMRS screenshot" width="400">
+* The frontend for the Smart Medical Record System (SMRS) is built using **React + Vite**, allowing users to upload, view, and manage their medical PDFs.  
+* This client communicates with the backend API deployed on Render.
+<div align="center">
+  <img src="screenshots/smrs-front.png" alt="SMRS Front screenshot" height="300" />
+  <img src="screenshots/smrs.png" alt="SMRS screenshot" height="300" />
 </div>
+
 
 ---
 
