@@ -2,6 +2,7 @@ import { useState } from "react";
 import { auth } from "../Firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      alert("Account created successfully! Please login to continue.");
+      toast.success("Account created successfully. Please login to continue.");
       navigate("/login");
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
@@ -25,6 +26,7 @@ const Signup = () => {
       } else {
         setError("Error creating account. Please try again.");
       }
+      toast.error("Could not create account.");
     }
   };
 

@@ -6,6 +6,17 @@
   <img src="screenshots/smrs-front.png" alt="SMRS Front screenshot" height="300" />
   <img src="screenshots/smrs.png" alt="SMRS screenshot" height="300" />
 </div>
+## Environment Variables
+
+Create `frontend/.env` and set:
+
+- `VITE_API_URL`: existing backend URL (upload/delete/original analyze flow)
+- `VITE_ANALYZE_API_URL`: public report analysis backend URL
+- Firebase keys used in `src/Firebase.js`
+
+Example values are in `frontend/.env.example`.
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 
 ---

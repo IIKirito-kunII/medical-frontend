@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { auth } from "../Firebase";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -10,10 +11,11 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      alert("You have been successfully logged out!");
+      toast.success("You have been successfully logged out.");
       navigate("/");
     } catch (error) {
       console.error("Error signing out:", error);
+      toast.error("Could not log out. Please try again.");
     }
   };
 

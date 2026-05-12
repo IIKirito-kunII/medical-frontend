@@ -2,6 +2,7 @@ import { useState } from "react";
 import { auth } from "../Firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -13,10 +14,11 @@ const Login = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Successfully logged in!");
+      toast.success("Successfully logged in.");
       navigate("/dashboard");
     } catch (error) {
       setError("Invalid email or password. Please try again.");
+      toast.error("Invalid email or password.");
     }
   };
 

@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import { auth, db } from "../Firebase";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import {
+  Copy,
+  Download,
+  ExternalLink,
+  QrCode,
+  FileText,
+  Trash2,
+  Plus,
+  X,
+} from "lucide-react";
 import {
   collection,
   addDoc,
@@ -10,7 +21,6 @@ import {
   query,
   where,
   getDocs,
-  orderBy,
   serverTimestamp,
 } from "firebase/firestore";
 import.meta.env.VITE_API_URL;
@@ -28,6 +38,7 @@ const Dashboard = () => {
   const [analyzing, setAnalyzing] = useState(false);
   const [summaries, setSummaries] = useState(null);
   const [analyzeError, setAnalyzeError] = useState(null);
+  const [selectedQrReport, setSelectedQrReport] = useState(null);
   const navigate = useNavigate();
 
   // Fetch medical reports from Firestore
@@ -246,7 +257,7 @@ const Dashboard = () => {
       await fetchReports(user.uid);
     } catch (error) {
       console.error("Error deleting report:", error);
-      alert(`Failed to delete report: ${error.message}`);
+      toast.error(`Failed to delete report: ${error.message}`);
     }
   };
 
@@ -322,6 +333,50 @@ const Dashboard = () => {
     }
   };
 
+  const buildPublicReportUrl = (report) => {
+    const params = new URLSearchParams({
+      email: user?.email || "",
+      fileName: report.fileName || "",
+      fileUrl: report.fileUrl || "",
+      mimetype: report.mimetype || "",
+    });
+    return `${window.location.origin}/public-report?${params.toString()}`;
+  };
+
+  const getQrImageUrl = (url) => {
+    return `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(
+      url
+    )}`;
+  };
+
+  const downloadQr = async (report) => {
+    try {
+      const publicUrl = buildPublicReportUrl(report);
+      const qrUrl = getQrImageUrl(publicUrl);
+      const response = await fetch(qrUrl);
+      if (!response.ok) {
+        throw new Error("Could not download QR image.");
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      const baseName = (report.fileName || "report")
+        .replace(/\.[^/.]+$/, "")
+        .replace(/[^a-zA-Z0-9-_ ]/g, "")
+        .trim()
+        .replace(/\s+/g, "_");
+      link.download = `${baseName || "report"}_QR.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      toast.error(error.message || "Failed to download QR.");
+    }
+  };
+
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -340,7 +395,10 @@ const Dashboard = () => {
             className="cursor-pointer ml-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors duration-150"
             onClick={() => document.getElementById("fileInput").click()}
           >
-            Add New Record
+            <span className="inline-flex items-center gap-2">
+              <Plus size={16} />
+              Add New Record
+            </span>
           </button>
           <input
             type="file"
@@ -467,6 +525,7 @@ const Dashboard = () => {
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
                     <div className="text-2xl">📄</div>
+                    <div className="sr-only">report</div>
                     <div className="min-w-0 overflow-hidden flex-auto">
                       <h3 className="font-medium truncate text-gray-800">
                         {report.fileName}
@@ -488,15 +547,35 @@ const Dashboard = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-3 py-1.5 ml-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
+                      title="Open this report"
                     >
-                      View
+                      <span className="inline-flex items-center gap-1.5">
+                        <FileText size={14} />
+                        View
+                      </span>
                     </a>
+                  )}
+                  {report.fileUrl && (
+                    <button
+                      onClick={() => setSelectedQrReport(report)}
+                      className="px-3 py-1.5 bg-amber-600 cursor-pointer text-white text-sm rounded-lg hover:bg-amber-700 transition-colors"
+                      title="Generate QR for public report page"
+                    >
+                      <span className="inline-flex items-center gap-1.5">
+                        <QrCode size={14} />
+                        Generate QR
+                      </span>
+                    </button>
                   )}
                   <button
                     onClick={() => handleDeleteReport(report)}
                     className="px-3 py-1.5 bg-red-600 cursor-pointer text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
+                    title="Delete this report"
                   >
-                    Delete
+                    <span className="inline-flex items-center gap-1.5">
+                      <Trash2 size={14} />
+                      Delete
+                    </span>
                   </button>
                 </div>
               </div>
@@ -504,6 +583,77 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+
+      {selectedQrReport && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          onClick={() => setSelectedQrReport(null)}
+        >
+          <div
+            className="bg-white w-full max-w-md rounded-xl p-6 shadow-xl relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              Report Public QR
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Scan to open the public report page.
+            </p>
+            <button
+              onClick={() => downloadQr(selectedQrReport)}
+              className="absolute top-6 right-14 p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-800 cursor-pointer"
+              title="Download QR image"
+            >
+              <Download size={18} />
+            </button>
+            <button
+              onClick={() => setSelectedQrReport(null)}
+              className="absolute top-6 right-6 p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-800 cursor-pointer"
+              title="Close dialog"
+              aria-label="Close dialog"
+            >
+              <X size={18} />
+            </button>
+            <img
+              className="mx-auto rounded-lg border border-gray-200"
+              src={getQrImageUrl(buildPublicReportUrl(selectedQrReport))}
+              alt="Report QR code"
+            />
+            <p className="text-xs text-gray-500 mt-4 break-all">
+              {buildPublicReportUrl(selectedQrReport)}
+            </p>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <button
+                onClick={async () => {
+                  await navigator.clipboard.writeText(
+                    buildPublicReportUrl(selectedQrReport)
+                  );
+                  toast.success("Public report link copied.");
+                }}
+                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 cursor-pointer"
+                title="Copy public report URL"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <Copy size={16} />
+                  Copy Link
+                </span>
+              </button>
+              <button
+                onClick={() =>
+                  window.open(buildPublicReportUrl(selectedQrReport), "_blank")
+                }
+                className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 cursor-pointer"
+                title="Open public report page"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <ExternalLink size={16} />
+                  Open URL
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
